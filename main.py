@@ -11,4 +11,3 @@ boardSize, nBomb, listBombCoords = extractInfoFromFile(f)
 matriks = [[tile(None)] * boardSize] * boardSize
 
 print(matriks)
-
