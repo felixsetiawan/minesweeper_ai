@@ -1,4 +1,5 @@
 from readfile import readFile, extractInfoFromFile
+import clips
 
 class tile:
     def __init__(self, value) -> None:
