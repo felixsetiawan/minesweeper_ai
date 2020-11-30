@@ -1,4 +1,4 @@
-from readfile import readFile, extractInfoFromFile
+from util import readFile, extractInfoFromFile
 import clips
 
 def init_map(self):

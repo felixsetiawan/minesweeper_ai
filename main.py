@@ -1,14 +1,13 @@
-from readfile import readFile, extractInfoFromFile
+from util import readFile, extractInfoFromFile
 import clips
-
 
 class tile:
     def __init__(self, value) -> None:
         self.known = False
         self.value = None
 
-
-boardSize, nBomb, listBombCoords = extractInfoFromFile("input.txt")
+filename = input("file name: ")
+boardSize, nBomb, listBombCoords = extractInfoFromFile("testcase/" + filename)
 
 matriks = [[tile(None)] * boardSize] * boardSize
 
