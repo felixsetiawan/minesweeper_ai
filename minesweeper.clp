@@ -2,77 +2,91 @@
 ;;;* DEFTEMPLATE DEFINITIONS *
 ;;;***************************
 
-(deftemplate rule 
-	(multislot if)
-	(multislot then))
+(
+	deftemplate rule 
+		(multislot if)
+		(multislot then)
+)
 
-(deftemplate opened
-	(slot row)
-	(slot column)
-	(slot value)
-	(slot bombs))
+(
+	deftemplate possible
+		(slot row)
+		(slot column)
+)
 
-(deftemplate safe-cell
-	(slot row)
-	(slot column))
+(
+	deftemplate opened
+		(slot row)
+		(slot column)
+		(slot value)
+		(slot bombs)
+		(slot n_possible)
+)
 
-(deftemplate mark-bomb
-	(slot row)
-	(slot column))
+(
+	deftemplate safe-cell
+		(slot row)
+		(slot column))
+
+(
+	deftemplate mark-bomb
+		(slot row)
+		(slot column)
+)
 
 ; ********************
 ; DEFFUNCTION ADJACENTS
 ; ********************
-(deffuntion adjacent-up 
+(deffunction adjacent-up 
 	(?r ?c) 
 	(return 
 		(create$ (+ ?r 1) ?c)
 	)
 )
 
-(deffuntion adjacent-up-right 
+(deffunction adjacent-up-right 
 	(?r ?c) 
 	(return 
 		(create$ (+ ?r 1) (+ ?c 1))
 	)
 )
 
-(deffuntion adjacent-right 
+(deffunction adjacent-right 
 	(?r ?c) 
 	(return 
 		(create$ ?r (+ ?c 1))
 	)
 )
 
-(deffuntion adjacent-down-right 
+(deffunction adjacent-down-right 
 	(?r ?c) 
 	(return 
 		(create$ (- ?r 1) (+ ?c 1))
 	)
 )
 
-(deffuntion adjacent-down 
+(deffunction adjacent-down 
 	(?r ?c) 
 	(return 
 		(create$ (- ?r 1) ?c)
 	)
 )
 
-(deffuntion adjacent-down-left 
+(deffunction adjacent-down-left 
 	(?r ?c) 
 	(return 
 		(create$ (- ?r 1) (- ?c 1))
 	)
 )
 
-(deffuntion adjacent-left 
+(deffunction adjacent-left 
 	(?r ?c) 
 	(return 
 		(create$ ?r (- ?c 1))
 	)
 )
 
-(deffuntion adjacent-up-left 
+(deffunction adjacent-up-left 
 	(?r ?c) 
 	(return 
 		(create$ (+ ?r 1) (- ?c 1))
@@ -80,72 +94,528 @@
 )
 
 ; *****************************
-; DEFFUNCTION POSSIBLE
-; *****************************
-(deffuntion possible
-	(row ?r column ?c value ?v bombs ?b)
-	(not (opened (?r ?c ?v ?b)))
-	(not (mark-bomb (?r ?c)))
-	(not (mark-safe (?r ?c)))
-)
-
-; *****************************
 ; DEFRULES
 ; *****************************
 
-(defrule check00
-	; (declare (salience ))
-	(phase start-game)
-	=>
-	(assert (safe-cell (row 0) (column 0))
-		(phase open)
-		(not (possible (row 0) (column 0)))
-	)
+(
+	defrule start-game
+		(phase start-game)
+		=>
+		(
+			assert (
+				safe-cell 
+				(row 0) 
+				(column 0)
+				)
+
+				(phase open)
+				)
+		)
 )
 
 ; all bombs around current cell have already been found
 (defrule check-first-condition
 	(phase checking)
-	(possible (row ?r) (column ?c) (value ?v) (bombs ?b))
-	(test (= (?v ?b)))
-
+	(opened 
+		(row ?r) 
+		(column ?c) 
+		(value ?v) 
+		(bombs ?b)
+		(n_possible any)
+	)
+	(test 
+		(= 
+			(?v ?b)
+		)
+	)
 	=>
-	(if (possible (nth$ 1 (adjacent-up (?r ?c))) nth$ 2 (adjacent-up (?r ?c))) (value any) (bombs any)))
-      then 
-      (assert safe-cell(nth$ 1 (adjacent-up (?r ?c))) nth$ 2 (adjacent-up (?r ?c)))))
+
+	(if 
+		(possible 
+			(nth$ 1 
+				(adjacent-up 
+					(?r ?c)
+				)
+			) 
+			(nth$ 2 
+				(adjacent-up 
+					(?r ?c)
+				)
+			)
+		) then 
+      		(assert 
+				(safe-cell
+					(nth$ 1 
+						(adjacent-up 
+							(?r ?c)
+						)
+					) 
+					(nth$ 2 
+						(adjacent-up 
+							(?r ?c)
+						)
+					)
+				)
+				(phase open)
+			)
+	)
+	(if 
+		(possible 
+			(nth$ 1 
+				(adjacent-up-right 
+					(?r ?c)
+				)
+			) 
+			(nth$ 2 
+				(adjacent-up-right 
+					(?r ?c)
+				)
+			)
+		) then 
+      		(assert 
+				(safe-cell
+					(nth$ 1 
+						(adjacent-up-right 
+							(?r ?c)
+						)
+					) 
+					(nth$ 2 
+						(adjacent-up-right 
+							(?r ?c)
+						)
+					)
+				)
+				(phase open)
+			)
    )
-	(if (possible (nth$ 1 (adjacent-up-right (?r ?c))) nth$ 2 (adjacent-up-right (?r ?c))) (value any) (bombs any)))
-      then 
-      (assert safe-cell(nth$ 1 (adjacent-up-right (?r ?c))) nth$ 2 (adjacent-up-right (?r ?c)))))
+   (if 
+		(possible 
+			(nth$ 1 
+				(adjacent-right 
+					(?r ?c)
+				)
+			) 
+			(nth$ 2 
+				(adjacent-right 
+					(?r ?c)
+				)
+			)
+		) then 
+      		(assert 
+				(safe-cell
+					(nth$ 1 
+						(adjacent-right 
+							(?r ?c)
+						)
+					) 
+					(nth$ 2 
+						(adjacent-right 
+							(?r ?c)
+						)
+					)
+				)
+				(phase open)
+			)
    )
-	(if (possible (nth$ 1 (adjacent-right (?r ?c))) nth$ 2 (adjacent-right (?r ?c))) (value any) (bombs any)))
-      then 
-      (assert safe-cell(nth$ 1 (adjacent-right (?r ?c))) nth$ 2 (adjacent-right (?r ?c)))))
+	(if 
+		(possible 
+			(nth$ 1 
+				(adjacent-down-right
+					(?r ?c)
+				)
+			) 
+			(nth$ 2 
+				(adjacent-down-right
+					(?r ?c)
+				)
+			)
+		) then 
+      		(assert 
+				(safe-cell
+					(nth$ 1 
+						(adjacent-down-right
+							(?r ?c)
+						)
+					) 
+					(nth$ 2 
+						(adjacent-down-right
+							(?r ?c)
+						)
+					)
+				)
+				(phase open)
+			)
    )
-	(if (possible (nth$ 1 (adjacent-down-right (?r ?c))) nth$ 2 (adjacent-down-right (?r ?c))) (value any) (bombs any)))
-      then 
-      (assert safe-cell(nth$ 1 (adjacent-down-right (?r ?c))) nth$ 2 (adjacent-down-right (?r ?c)))))
+   (if 
+		(possible 
+			(nth$ 1 
+				(adjacent-down
+					(?r ?c)
+				)
+			) 
+			(nth$ 2 
+				(adjacent-down
+					(?r ?c)
+				)
+			)
+		) then 
+      		(assert 
+				(safe-cell
+					(nth$ 1 
+						(adjacent-down
+							(?r ?c)
+						)
+					) 
+					(nth$ 2 
+						(adjacent-down
+							(?r ?c)
+						)
+					)
+				)
+				(phase open)
+			)
    )
-	(if (possible (nth$ 1 (adjacent-down (?r ?c))) nth$ 2 (adjacent-down (?r ?c))) (value any) (bombs any)))
-      then 
-      (assert safe-cell(nth$ 1 (adjacent-down (?r ?c))) nth$ 2 (adjacent-down (?r ?c)))))
+   (if 
+		(possible 
+			(nth$ 1 
+				(adjacent-down-left
+					(?r ?c)
+				)
+			) 
+			(nth$ 2 
+				(adjacent-down-left
+					(?r ?c)
+				)
+			)
+		) then 
+      		(assert 
+				(safe-cell
+					(nth$ 1 
+						(adjacent-down-left
+							(?r ?c)
+						)
+					) 
+					(nth$ 2 
+						(adjacent-down-left
+							(?r ?c)
+						)
+					)
+				)
+				(phase open)
+			)
    )
-	(if (possible (nth$ 1 (adjacent-down-left (?r ?c))) nth$ 2 (adjacent-down-left (?r ?c))) (value any) (bombs any)))
-      then 
-      (assert safe-cell(nth$ 1 (adjacent-down-left (?r ?c))) nth$ 2 (adjacent-down-left (?r ?c)))))
+   (if 
+		(possible 
+			(nth$ 1 
+				(adjacent-left 
+					(?r ?c)
+				)
+			) 
+			(nth$ 2 
+				(adjacent-left 
+					(?r ?c)
+				)
+			)
+		) then 
+      		(assert 
+				(safe-cell
+					(nth$ 1 
+						(adjacent-left 
+							(?r ?c)
+						)
+					) 
+					(nth$ 2 
+						(adjacent-left 
+							(?r ?c)
+						)
+					)
+				)
+				(phase open)
+			)
    )
-	(if (possible (nth$ 1 (adjacent-left (?r ?c))) nth$ 2 (adjacent-left (?r ?c))) (value any) (bombs any)))
-      then 
-      (assert safe-cell(nth$ 1 (adjacent-left (?r ?c))) nth$ 2 (adjacent-left (?r ?c)))))
-   )
-	(if (possible (nth$ 1 (adjacent-up-left (?r ?c))) nth$ 2 (adjacent-up-left (?r ?c))) (value any) (bombs any)))
-      then 
-      (assert safe-cell(nth$ 1 (adjacent-up-left (?r ?c))) nth$ 2 (adjacent-up-left (?r ?c)))))
+   (if 
+		(possible 
+			(nth$ 1 
+				(adjacent-up-left
+					(?r ?c)
+				)
+			) 
+			(nth$ 2 
+				(adjacent-up-left
+					(?r ?c)
+				)
+			)
+		) then 
+      		(assert 
+				(safe-cell
+					(nth$ 1 
+						(adjacent-up-left
+							(?r ?c)
+						)
+					) 
+					(nth$ 2 
+						(adjacent-up-left
+							(?r ?c)
+						)
+					)
+				)
+				(phase open)
+			)
    )
 )
 
-; Not all bombs around current cell have already been found
+; bombs < value
 (defrule check-second-condition
 	(phase checking)
-	(possible (row ?r) (column ?c) (value ?v) (bombs ?b))
+	(opened 
+		(row ?r) 
+		(column ?c) 
+		(value ?v) 
+		(bombs ?b)
+		(n_possible ?n)
+	)
+	(test 
+		( > 
+			(?v ?b)
+		)
+	)
+	=>
+	(if 
+		(= ?n_possible
+			(- ?v ?b)	
+		) then
+			(if 
+				(possible 
+					(nth$ 1 
+						(adjacent-up
+							(?r ?c)
+						)
+					) 
+					(nth$ 2 
+						(adjacent-up
+							(?r ?c)
+						)
+					)
+				) then 
+					(assert 
+						(mark-bomb
+							(nth$ 1 
+								(adjacent-up
+									(?r ?c)
+								)
+							) 
+							(nth$ 2 
+								(adjacent-up
+									(?r ?c)
+								)
+							)
+						)
+						(phase open)
+					)
+			)
+			(if 
+				(possible 
+					(nth$ 1 
+						(adjacent-up-right
+							(?r ?c)
+						)
+					) 
+					(nth$ 2 
+						(adjacent-up-right
+							(?r ?c)
+						)
+					)
+				) then 
+					(assert 
+						(mark-bomb
+							(nth$ 1 
+								(adjacent-up-right
+									(?r ?c)
+								)
+							) 
+							(nth$ 2 
+								(adjacent-up-right
+									(?r ?c)
+								)
+							)
+						)
+						(phase open)
+					)
+			)
+			(if 
+				(possible 
+					(nth$ 1 
+						(adjacent-right
+							(?r ?c)
+						)
+					) 
+					(nth$ 2 
+						(adjacent-right
+							(?r ?c)
+						)
+					)
+				) then 
+					(assert 
+						(mark-bomb
+							(nth$ 1 
+								(adjacent-right
+									(?r ?c)
+								)
+							) 
+							(nth$ 2 
+								(adjacent-right
+									(?r ?c)
+								)
+							)
+						)
+						(phase open)
+					)
+			)
+			(if 
+				(possible 
+					(nth$ 1 
+						(adjacent-down-right
+							(?r ?c)
+						)
+					) 
+					(nth$ 2 
+						(adjacent-down-right
+							(?r ?c)
+						)
+					)
+				) then 
+					(assert 
+						(mark-bomb
+							(nth$ 1 
+								(adjacent-down-right
+									(?r ?c)
+								)
+							) 
+							(nth$ 2 
+								(adjacent-down-right
+									(?r ?c)
+								)
+							)
+						)
+						(phase open)
+					)
+			)
+			(if 
+				(possible 
+					(nth$ 1 
+						(adjacent-down
+							(?r ?c)
+						)
+					) 
+					(nth$ 2 
+						(adjacent-down
+							(?r ?c)
+						)
+					)
+				) then 
+					(assert 
+						(mark-bomb
+							(nth$ 1 
+								(adjacent-down
+									(?r ?c)
+								)
+							) 
+							(nth$ 2 
+								(adjacent-down
+									(?r ?c)
+								)
+							)
+						)
+						(phase open)
+					)
+			)
+			(if 
+				(possible 
+					(nth$ 1 
+						(adjacent-down-left
+							(?r ?c)
+						)
+					) 
+					(nth$ 2 
+						(adjacent-down-left
+							(?r ?c)
+						)
+					)
+				) then 
+					(assert 
+						(mark-bomb
+							(nth$ 1 
+								(adjacent-down-left
+									(?r ?c)
+								)
+							) 
+							(nth$ 2 
+								(adjacent-down-left
+									(?r ?c)
+								)
+							)
+						)
+						(phase open)
+					)
+			)
+			(if 
+				(possible 
+					(nth$ 1 
+						(adjacent-left
+							(?r ?c)
+						)
+					) 
+					(nth$ 2 
+						(adjacent-left
+							(?r ?c)
+						)
+					)
+				) then 
+					(assert 
+						(mark-bomb
+							(nth$ 1 
+								(adjacent-left
+									(?r ?c)
+								)
+							) 
+							(nth$ 2 
+								(adjacent-left
+									(?r ?c)
+								)
+							)
+						)
+						(phase open)
+					)
+			)
+			(if 
+				(possible 
+					(nth$ 1 
+						(adjacent-up-left
+							(?r ?c)
+						)
+					) 
+					(nth$ 2 
+						(adjacent-up-left
+							(?r ?c)
+						)
+					)
+				) then 
+					(assert 
+						(mark-bomb
+							(nth$ 1 
+								(adjacent-up-left
+									(?r ?c)
+								)
+							) 
+							(nth$ 2 
+								(adjacent-up-left
+									(?r ?c)
+								)
+							)
+						)
+						(phase open)
+					)
+			)
+	)
+
 )
