@@ -9,9 +9,6 @@ import platform
 import time
 from datetime import time, date, datetime
 
-SIZE_X = 10
-SIZE_Y = 10
-
 STATE_DEFAULT = 0
 STATE_CLICKED = 1
 STATE_FLAGGED = 2
@@ -22,9 +19,9 @@ BTN_FLAG = "<Button-2>" if platform.system() == 'Darwin' else "<Button-3>"
 window = None
 
 class Minesweeper:
-
-    def __init__(self, tk):
-
+    def __init__(self, filename, tk):
+        self.boardSize, self.nBomb, self.listBombCoords = boardSize, nBomb, listBombCoords = self.extractInfoFromFile("../testcase/" + filename)
+        
         # import images
         self.images = {
             "plain": PhotoImage(file = "images/tile_plain.gif"),
@@ -48,9 +45,9 @@ class Minesweeper:
             "mines": Label(self.frame, text = "Mines: 0"),
             "flags": Label(self.frame, text = "Flags: 0")
         }
-        self.labels["time"].grid(row = 0, column = 0, columnspan = SIZE_Y) # top full width
-        self.labels["mines"].grid(row = SIZE_X+1, column = 0, columnspan = int(SIZE_Y/2)) # bottom left
-        self.labels["flags"].grid(row = SIZE_X+1, column = int(SIZE_Y/2)-1, columnspan = int(SIZE_Y/2)) # bottom right
+        self.labels["time"].grid(row = 0, column = 0, columnspan = self.boardSize) # top full width
+        self.labels["mines"].grid(row = self.boardSize+1, column = 0, columnspan = int(self.boardSize/2)) # bottom left
+        self.labels["flags"].grid(row = self.boardSize+1, column = int(self.boardSize/2)-1, columnspan = int(self.boardSize/2)) # bottom right
 
         self.restart() # start game
         self.updateTimer() # init timer
@@ -64,9 +61,9 @@ class Minesweeper:
 
         # create buttons
         self.tiles = dict({})
-        self.mines = 0
-        for x in range(0, SIZE_X):
-            for y in range(0, SIZE_Y):
+        self.mines = self.nBomb
+        for x in range(0, self.boardSize):
+            for y in range(0, self.boardSize):
                 if y == 0:
                     self.tiles[x] = {}
 
@@ -77,9 +74,13 @@ class Minesweeper:
                 gfx = self.images["plain"]
 
                 # currently random amount of mines
-                if random.uniform(0.0, 1.0) < 0.1:
-                    isMine = True
-                    self.mines += 1
+                # if random.uniform(0.0, 1.0) < 0.1:
+                #     isMine = True
+                #     self.mines += 1
+                
+                for pos in self.listBombCoords:
+                    if (x == pos[0] and y == pos[1]):
+                        isMine = True
 
                 tile = {
                     "id": id,
@@ -100,8 +101,8 @@ class Minesweeper:
                 self.tiles[x][y] = tile
 
         # loop again to find nearby mines and display number on tile
-        for x in range(0, SIZE_X):
-            for y in range(0, SIZE_Y):
+        for x in range(0, self.boardSize):
+            for y in range(0, self.boardSize):
                 mc = 0
                 for n in self.getNeighbors(x, y):
                     mc += 1 if n["isMine"] else 0
@@ -116,8 +117,8 @@ class Minesweeper:
         self.labels["mines"].config(text = "Mines: "+str(self.mines))
 
     def gameOver(self, won):
-        for x in range(0, SIZE_X):
-            for y in range(0, SIZE_Y):
+        for x in range(0, self.boardSize):
+            for y in range(0, self.boardSize):
                 if self.tiles[x][y]["isMine"] == False and self.tiles[x][y]["state"] == STATE_FLAGGED:
                     self.tiles[x][y]["button"].config(image = self.images["wrong"])
                 if self.tiles[x][y]["isMine"] == True and self.tiles[x][y]["state"] != STATE_FLAGGED:
@@ -186,7 +187,7 @@ class Minesweeper:
         if tile["state"] != STATE_CLICKED:
             tile["state"] = STATE_CLICKED
             self.clickedCount += 1
-        if self.clickedCount == (SIZE_X * SIZE_Y) - self.mines:
+        if self.clickedCount == (self.boardSize * self.boardSize) - self.mines:
             self.gameOver(True)
 
     def onRightClick(self, tile):
@@ -238,16 +239,39 @@ class Minesweeper:
 
         tile["state"] = STATE_CLICKED
         self.clickedCount += 1
+        
+    def readFile(self, fileName):
+        f = open(fileName, "r")
+        return f
+
+    def extractInfoFromFile(self, fileName):
+        fileObject = self.readFile(fileName)
+        boardSize = int(fileObject.readline())
+        nBomb = int(fileObject.readline())
+        listBombCoords = []
+        
+        for line in fileObject:
+            listBombCoords.append(line.strip().split(','))
+        fileObject.close()
+
+        stripped_list_bomb_coords = []
+        for array in listBombCoords:
+            array = [int(x.strip(' ')) for x in array]
+            stripped_list_bomb_coords.append(array)
+            
+        return boardSize, nBomb, stripped_list_bomb_coords 
 
 ### END OF CLASSES ###
 
 def main():
+    filename = input("file name: ")
+    
     # create Tk instance
     window = Tk()
     # set program title
     window.title("Minesweeper")
     # create game instance
-    minesweeper = Minesweeper(window)
+    minesweeper = Minesweeper(filename, window)
     # run event loop
     window.mainloop()
 

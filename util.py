@@ -7,6 +7,7 @@ def extractInfoFromFile(fileName):
     boardSize = int(fileObject.readline())
     nBomb = int(fileObject.readline())
     listBombCoords = []
+    
     for line in fileObject:
         listBombCoords.append(line.strip().split(','))
     fileObject.close()
@@ -15,4 +16,5 @@ def extractInfoFromFile(fileName):
     for array in listBombCoords:
         array = [int(x.strip(' ')) for x in array]
         stripped_list_bomb_coords.append(array)
-    return boardSize, nBomb, stripped_list_bomb_coords
+        
+    return boardSize, nBomb, stripped_list_bomb_coords 

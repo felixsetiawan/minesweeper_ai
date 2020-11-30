@@ -11,4 +11,6 @@ boardSize, nBomb, listBombCoords = extractInfoFromFile("testcase/" + filename)
 
 matriks = [[tile(None)] * boardSize] * boardSize
 
-print(matriks)
+print(boardSize)
+print(nBomb)
+print(listBombCoords)
