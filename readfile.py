@@ -2,7 +2,8 @@ def readFile(fileName):
     f = open(fileName, "r")
     return f
 
-def extractInfoFromFile(fileObject):
+def extractInfoFromFile(fileName):
+    fileObject = readFile(fileName)
     boardSize = int(fileObject.readline())
     nBomb = int(fileObject.readline())
     listBombCoords = []
