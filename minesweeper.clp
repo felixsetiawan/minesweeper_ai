@@ -89,22 +89,9 @@
 	(not (mark-safe (?r ?c)))
 )
 
-; (defrule propagate-goal ""
-;    (goal is ?goal)
-;    (rule (if ?variable $?)
-;          (then ?goal ? ?value))
-;    =>
-;    (assert (goal is ?variable)))
-
-; (defrule goal-satified ""
-;    (declare (salience 30))
-;    ?f <- (goal is ?goal)
-;    (variable ?goal ?value)
-;    (answer ? ?text ?goal)
-;    =>
-;    (retract ?f)
-;    (format t "%s%s%n" ?text ?value))
-
+; *****************************
+; DEFRULES
+; *****************************
 
 (defrule check00
 	; (declare (salience ))
@@ -126,43 +113,39 @@
 	(if (possible (nth$ 1 (adjacent-up (?r ?c))) nth$ 2 (adjacent-up (?r ?c))) (value any) (bombs any)))
       then 
       (assert safe-cell(nth$ 1 (adjacent-up (?r ?c))) nth$ 2 (adjacent-up (?r ?c)))))
-    )
+   )
 	(if (possible (nth$ 1 (adjacent-up-right (?r ?c))) nth$ 2 (adjacent-up-right (?r ?c))) (value any) (bombs any)))
       then 
       (assert safe-cell(nth$ 1 (adjacent-up-right (?r ?c))) nth$ 2 (adjacent-up-right (?r ?c)))))
-    )
+   )
 	(if (possible (nth$ 1 (adjacent-right (?r ?c))) nth$ 2 (adjacent-right (?r ?c))) (value any) (bombs any)))
       then 
       (assert safe-cell(nth$ 1 (adjacent-right (?r ?c))) nth$ 2 (adjacent-right (?r ?c)))))
-    )
+   )
 	(if (possible (nth$ 1 (adjacent-down-right (?r ?c))) nth$ 2 (adjacent-down-right (?r ?c))) (value any) (bombs any)))
       then 
       (assert safe-cell(nth$ 1 (adjacent-down-right (?r ?c))) nth$ 2 (adjacent-down-right (?r ?c)))))
-    )
+   )
 	(if (possible (nth$ 1 (adjacent-down (?r ?c))) nth$ 2 (adjacent-down (?r ?c))) (value any) (bombs any)))
       then 
       (assert safe-cell(nth$ 1 (adjacent-down (?r ?c))) nth$ 2 (adjacent-down (?r ?c)))))
-    )
+   )
 	(if (possible (nth$ 1 (adjacent-down-left (?r ?c))) nth$ 2 (adjacent-down-left (?r ?c))) (value any) (bombs any)))
       then 
       (assert safe-cell(nth$ 1 (adjacent-down-left (?r ?c))) nth$ 2 (adjacent-down-left (?r ?c)))))
-    )
+   )
 	(if (possible (nth$ 1 (adjacent-left (?r ?c))) nth$ 2 (adjacent-left (?r ?c))) (value any) (bombs any)))
       then 
       (assert safe-cell(nth$ 1 (adjacent-left (?r ?c))) nth$ 2 (adjacent-left (?r ?c)))))
-    )
+   )
 	(if (possible (nth$ 1 (adjacent-up-left (?r ?c))) nth$ 2 (adjacent-up-left (?r ?c))) (value any) (bombs any)))
       then 
       (assert safe-cell(nth$ 1 (adjacent-up-left (?r ?c))) nth$ 2 (adjacent-up-left (?r ?c)))))
-    )
+   )
 )
 
 ; Not all bombs around current cell have already been found
 (defrule check-second-condition
 	(phase checking)
 	(possible (row ?r) (column ?c) (value ?v) (bombs ?b))
-	(test (= (?v ?b)))
-	
-	=>(if )
-
 )
