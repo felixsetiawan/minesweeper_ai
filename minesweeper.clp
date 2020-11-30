@@ -110,6 +110,7 @@
 
 				(phase open)
 				)
+			(retract phase start-game)
 		)
 )
 
@@ -410,7 +411,6 @@
 								)
 							)
 						)
-						(phase open)
 					)
 			)
 			(if 
@@ -439,7 +439,6 @@
 								)
 							)
 						)
-						(phase open)
 					)
 			)
 			(if 
@@ -468,7 +467,6 @@
 								)
 							)
 						)
-						(phase open)
 					)
 			)
 			(if 
@@ -497,7 +495,6 @@
 								)
 							)
 						)
-						(phase open)
 					)
 			)
 			(if 
@@ -526,7 +523,6 @@
 								)
 							)
 						)
-						(phase open)
 					)
 			)
 			(if 
@@ -555,7 +551,6 @@
 								)
 							)
 						)
-						(phase open)
 					)
 			)
 			(if 
@@ -584,7 +579,6 @@
 								)
 							)
 						)
-						(phase open)
 					)
 			)
 			(if 
@@ -613,7 +607,6 @@
 								)
 							)
 						)
-						(phase open)
 					)
 			)
 	)
