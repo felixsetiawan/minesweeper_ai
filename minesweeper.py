@@ -3,7 +3,6 @@
 from tkinter import *
 from tkinter import messagebox as tkMessageBox
 from collections import deque
-import random
 import platform
 import time
 from datetime import time, date, datetime
@@ -74,11 +73,7 @@ class Minesweeper:
                 # tile image changeable for debug reasons:
                 gfx = self.images["plain"]
 
-                # currently random amount of mines
-                # if random.uniform(0.0, 1.0) < 0.1:
-                #     isMine = True
-                #     self.mines += 1
-                
+                # set mines
                 for pos in self.listBombCoords:
                     if (x == pos[0] and y == pos[1]):
                         isMine = True
