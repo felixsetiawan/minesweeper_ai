@@ -257,8 +257,6 @@ class Minesweeper:
             
         return boardSize, nBomb, stripped_list_bomb_coords 
 
-### END OF CLASSES ###
-
 def main():
     filename = input("file name: ")
     
