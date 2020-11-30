@@ -122,13 +122,14 @@
 		(column ?c) 
 		(value ?v) 
 		(bombs ?b)
-		(n_possible any)
+		(n_possible ?n)
 	)
 	(test 
 		(= 
 			(?v ?b)
 		)
 	)
+	(> ?n 0)
 	=>
 
 	(if 
@@ -380,6 +381,7 @@
 			(?v ?b)
 		)
 	)
+	(> ?n 0)
 	=>
 	(if 
 		(= ?n_possible
