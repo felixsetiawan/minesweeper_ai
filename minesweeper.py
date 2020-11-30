@@ -1,5 +1,4 @@
-# Python Version 2.7.3
-# File: minesweeper.py
+# Game Minesweeper
 
 from tkinter import *
 from tkinter import messagebox as tkMessageBox
@@ -8,6 +7,8 @@ import random
 import platform
 import time
 from datetime import time, date, datetime
+from clips import Environment, Symbol
+import os
 
 STATE_DEFAULT = 0
 STATE_CLICKED = 1
@@ -20,7 +21,7 @@ window = None
 
 class Minesweeper:
     def __init__(self, filename, tk):
-        self.boardSize, self.nBomb, self.listBombCoords = boardSize, nBomb, listBombCoords = self.extractInfoFromFile("../testcase/" + filename)
+        self.boardSize, self.nBomb, self.listBombCoords = boardSize, nBomb, listBombCoords = self.extractInfoFromFile("./testcase/" + filename)
         
         # import images
         self.images = {
